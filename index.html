@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather-APP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.4/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <div class="fullBody">
+        <div class="current">
+            <div class="search">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 48 48">
+                    <path fill="#616161" d="M34.6 28.1H38.6V45.1H34.6z" transform="rotate(-45.001 36.586 36.587)">
+                    </path>
+                    <path fill="#616161" d="M20 4A16 16 0 1 0 20 36A16 16 0 1 0 20 4Z"></path>
+                    <path fill="#37474F" d="M36.2 32.1H40.2V44.400000000000006H36.2z"
+                        transform="rotate(-45.001 38.24 38.24)"></path>
+                    <path fill="#64B5F6" d="M20 7A13 13 0 1 0 20 33A13 13 0 1 0 20 7Z"></path>
+                    <path fill="#BBDEFB"
+                        d="M26.9,14.2c-1.7-2-4.2-3.2-6.9-3.2s-5.2,1.2-6.9,3.2c-0.4,0.4-0.3,1.1,0.1,1.4c0.4,0.4,1.1,0.3,1.4-0.1C16,13.9,17.9,13,20,13s4,0.9,5.4,2.5c0.2,0.2,0.5,0.4,0.8,0.4c0.2,0,0.5-0.1,0.6-0.2C27.2,15.3,27.2,14.6,26.9,14.2z">
+                    </path>
+                </svg>
+                <input type="text" placeholder="search your city" id="searchInput" name="searchBar">
+            </div>
+
+            <div class="data">
+                <div class="weatherImage"></div>
+                <div class="temp">
+                    <div class="currTemp"></div>
+                </div>
+                <div class="weatherType"></div>
+                <div class="city"></div>
+                <div class="dateT"></div>
+                <div class="parameters">
+                    <div class="box">
+                        Feels Like
+                        <p class="feels"></p>
+                    </div>
+                    <div class="box">
+                        Humidity
+                        <p class="humidity"></p>
+                    </div>
+                    <div class=" box">
+                        Windspeed
+                        <p class="windSpeed"></p>
+                    </div>
+                    <div class="box">
+                        Pressure
+                        <p class="pressure"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sideDiv fade-in">
+            <div class="hour seven">
+                <div class="calender">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-clock" viewBox="0 0 16 16">
+                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z" />
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0" />
+                    </svg>
+                    <div class="headFor">HOURLY FORECAST</div>
+                </div>
+                <hr width="200px" color="grey">
+
+                <div class="hourly"></div>
+            </div>
+            <div class="seven">
+                <div class="calender">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-calendar" viewBox="0 0 16 16">
+                        <path
+                            d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
+                    </svg>
+                    <div class="headFor">7-DAY FORECAST</div>
+                </div>
+                <hr width="200px" color="grey">
+                <div class="sevenDay"></div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        let cityName = 'Ratia';
+
+
+        const city = document.querySelector('.city');
+        const dateT = document.querySelector('.dateT');
+        const weatherType = document.querySelector('.weatherType');
+        const weatherImage = document.querySelector('.weatherImage');
+
+        const currTemp = document.querySelector('.currTemp');
+
+        const feels = document.querySelector('.feels');
+        const humidity = document.querySelector('.humidity');
+        const windSpeed = document.querySelector('.windSpeed');
+        const pressure = document.querySelector('.pressure');
+
+        const formatDateTime = (dateTime) => {
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const [date, time] = dateTime.split(' ');
+            const [year, month, day] = date.split('-');
+            return `${parseInt(day)} ${months[parseInt(month) - 1]} ${time}`;
+        }
+
+        const getTime = (dateTime) => {
+            const [date, time] = dateTime.split(' ');
+            return time;
+        }
+
+        const formatDate = (dateArg) => {
+            const days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+            const [year, month, day] = dateArg.split('-');
+            let dateData = new Date(year, month - 1, day); //month is 1 based pm
+            let dayReturn = days[dateData.getDay()];
+
+            let dateReturn = `${day}/${month}`;
+
+            return [dayReturn, dateReturn];
+        }
+
+        let imgSrc;
+
+
+        //Main Div Target
+        const realTimeWeatherData = async (cityName) => {
+            const realTimeAPIurl = `http://api.weatherapi.com/v1/current.json?key=db160373b1cf4ec484891822252904&q=${cityName}`;
+            try {
+                const res = await fetch(realTimeAPIurl);
+                const data = await res.json();
+                console.log(data);
+                city.innerHTML = `${data.location.name}, ${data.location.region}, ${data.location.country}`;
+                dateT.innerHTML = formatDateTime(data.location.localtime);
+                weatherType.innerHTML = data.current.condition.text;
+                imgSrc = data.current.condition.icon;
+                weatherImage.innerHTML = `<img src = ${imgSrc}>`;
+                currTemp.innerHTML = data.current.temp_c + "°C";
+                feels.innerHTML = data.current.feelslike_c + "°C";
+                humidity.innerHTML = data.current.humidity + "%";
+                windSpeed.innerHTML = data.current.wind_kph + " KPH";
+                pressure.innerHTML = data.current.pressure_mb + " mb";
+
+            }
+            catch (error) {
+                alert('Please enter a valid city name');
+            }
+        }
+
+        realTimeWeatherData(cityName);
+        const hourDiv = document.querySelector('.hourly');
+        const sevenDay = document.querySelector('.sevenDay');
+
+
+        //Days Div and Hours Div
+        const forecastWeatherData = async (cityName) => {
+            const forecastAPIurl = `http://api.weatherapi.com/v1/forecast.json?key=db160373b1cf4ec484891822252904&q=${cityName}&days=7`;
+            try {
+                const res = await fetch(forecastAPIurl);
+                const data = await res.json();
+                const forecastArray = data.forecast.forecastday;
+                console.log((forecastArray));
+
+                let dayDate = formatDate(forecastArray[0].date);
+                const todayDiv = document.createElement('div');
+                todayDiv.classList.add('sevenElem');
+
+
+                imgSrc = forecastArray[0].day.condition.icon;
+                let maxTemp = forecastArray[0].day.maxtemp_c;
+                let minTemp = forecastArray[0].day.mintemp_c;
+                let rainChance = forecastArray[0].day.daily_chance_of_rain;
+
+                todayDiv.innerHTML = `
+                                     <p style = "color: white">Today</p>  
+                                     <p style = "font-size: 8px">${dayDate[1]}</p>
+                                     <p>${maxTemp}°C</p>
+                                     <p>${minTemp}°C</p>
+                                     <img src = ${imgSrc}>
+                                     <p>${rainChance}%</p>`;
+                sevenDay.append(todayDiv);
+
+                for (let i = 1; i < 7; i++) {
+                    const newDiv = document.createElement('div');
+                    newDiv.classList.add('sevenElem');
+                    dayDate = formatDate(forecastArray[i].date);
+
+                    imgSrc = forecastArray[i].day.condition.icon;
+                    maxTemp = forecastArray[i].day.maxtemp_c;
+                    minTemp = forecastArray[i].day.mintemp_c;
+                    rainChance = forecastArray[i].day.daily_chance_of_rain;
+
+                    newDiv.innerHTML = `<p style = "color: white">${dayDate[0]}</p>
+                                    <p style = "font-size: 8px">${dayDate[1]}</p>
+                                     <p>${maxTemp}°C</p>
+                                     <p>${minTemp}°C</p>
+                                     <img src = ${imgSrc}>
+                                     <p>${rainChance}%</p>`;
+                    sevenDay.append(newDiv);
+                }
+
+                let hourArray = forecastArray[0].hour;
+                let nextHourArray = forecastArray[1].hour;
+                let currHours = getTime(data.location.localtime);
+
+
+                let nowDiv = document.createElement('div');
+                let [hours, minutes] = currHours.split(':');
+
+                let nowHour = parseInt(hours);
+                let hourlyTemp = hourArray[nowHour].temp_c;
+                imgSrc = hourArray[nowHour].condition.icon;
+
+                nowDiv.classList.add('sevenElem');
+
+                nowDiv.innerHTML = `<p style = "color: white">NOW</p>
+                                     <p>${hourlyTemp}°C</p>
+                                     <img src = ${imgSrc}>`
+
+                hourDiv.append(nowDiv);
+                nowHour++;
+
+                for (let i = 1; i < 7; i++) {
+
+                    if (nowHour == 24) {
+                        hourArray = nextHourArray;
+                        nowHour = 0;
+                    }
+
+                    currHours = getTime(hourArray[nowHour].time);
+                    hourlyTemp = hourArray[i].temp_c;
+                    imgSrc = hourArray[i].condition.icon;
+
+                    nowDiv = document.createElement('div');
+                    nowDiv.classList.add('sevenElem');
+                    nowDiv.innerHTML = `<p style = "color: white">${currHours}</p>
+                                     <p>${hourlyTemp}°C</p>
+                                     <img src = ${imgSrc}>`
+                    
+
+                    hourDiv.append(nowDiv);
+                    nowHour++;
+                }
+
+            }
+            catch (error) {
+                alert("Kya kar rhe ho");
+
+            }
+        }
+        forecastWeatherData(cityName);
+
+        const searchInput = document.getElementById("searchInput");
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                cityName = searchInput.value.trim();
+                searchInput.placeholder = cityName;
+                searchInput.value = "";
+                sevenDay.innerHTML = "";
+                hourDiv.innerHTML = "";
+
+                realTimeWeatherData(cityName);
+                forecastWeatherData(cityName);
+                e.preventDefault();
+            }
+        }) 
+    </script>
+</body>
+
+</html>
