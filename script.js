@@ -41,7 +41,7 @@ let imgSrc;
 
 //Main Div Target
 const realTimeWeatherData = async (cityName) => {
-    const realTimeAPIurl = `http://api.weatherapi.com/v1/current.json?key=db160373b1cf4ec484891822252904&q=${cityName}`;
+    const realTimeAPIurl = `https://api.weatherapi.com/v1/current.json?key=db160373b1cf4ec484891822252904&q=${cityName}`;
     try {
         const res = await fetch(realTimeAPIurl);
         const data = await res.json();
@@ -70,7 +70,7 @@ const sevenDay = document.querySelector('.sevenDay');
 
 //Days Div and Hours Div
 const forecastWeatherData = async (cityName) => {
-    const forecastAPIurl = `http://api.weatherapi.com/v1/forecast.json?key=db160373b1cf4ec484891822252904&q=${cityName}&days=7`;
+    const forecastAPIurl = `https://api.weatherapi.com/v1/forecast.json?key=db160373b1cf4ec484891822252904&q=${cityName}&days=7`;
     try {
         const res = await fetch(forecastAPIurl);
         const data = await res.json();
