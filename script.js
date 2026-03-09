@@ -160,7 +160,7 @@ const forecastWeatherData = async (cityName) => {
 
     }
     catch (error) {
-        alert("Kya kar rhe ho");
+        alert("API Key expired, some views may not be visible");
 
     }
 }
